@@ -2,6 +2,15 @@ const express = require('express');
 
 const app = express();
 
+mongoose.connect('mongodb+srv://will:<PASSWORD>@cluster0-pme76.mongodb.net/test?retryWrites=true')
+  .then(() => {
+    console.log('Successfully connected to MongoDB Atlas!');
+  })
+  .catch((error) => {
+    console.log('Unable to connect to MongoDB Atlas!');
+    console.error(error);
+  });
+
 const bodyParser = require('body-parser');
 
 app.use((req, res, next) => {
@@ -13,7 +22,7 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-app.post('/api/stuff', (req, res, next) => {
+app.post('/api/recipes', (req, res, next) => {
   console.log(req.body);
   res.status(201).json({
     message: 'Thing created successfully!'
