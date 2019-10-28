@@ -8,4 +8,4 @@ const recipesSchema = mongoose.Schema({
   time: { type: Number, required: true },
 });
 
-module.exports = mongoose.model('Recipes', recipesSchema);
+module.exports = mongoose.model('Recipe', recipesSchema);

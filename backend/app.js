@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const Recipes = require('./models/recipes');
+const Recipe = require('./models/recipe');
 
 const app = express();
 
@@ -24,14 +24,14 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.post('/api/recipes', (req, res, next) => {
-  const recipes = new Recipes({
+  const recipe = new Recipe({
     title: req.body.title,
     ingredients: req.body.ingredients,
     instructions: req.body.instructions,
     difficulty: req.body.difficulty,
     time: req.body.time
   });
-  recipes.save().then(
+  recipe.save().then(
     () => {
       res.status(201).json({
         message: 'Post saved successfully!'
@@ -47,9 +47,9 @@ app.post('/api/recipes', (req, res, next) => {
 });
 
 app.use('/api/recipes', (req, res, next) => {
-  Recipes.find().then(
-    (recipes) => {
-      res.status(200).json(recipes);
+  Recipe.find().then(
+    (recipe) => {
+      res.status(200).json(recipe);
     }
   ).catch(
     (error) => {
@@ -61,11 +61,11 @@ app.use('/api/recipes', (req, res, next) => {
 });
 
 app.get('/api/recipes/:id', (req, res, next) => {
-  Recipes.findOne({
+  Recipe.findOne({
     _id: req.params.id
   }).then(
-    (recipes) => {
-      res.status(200).json(recipes);
+    (recipe) => {
+      res.status(200).json(recipe);
     }
   ).catch(
     (error) => {
@@ -76,19 +76,37 @@ app.get('/api/recipes/:id', (req, res, next) => {
   );
 });
 
+
+// This get a Single recipe
 app.put('/api/recipes/:id', (req, res, next) => {
-  const recipes = new Recipes({
-    _id: req.params.id,
+  const recipe = new Recipe({
     title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
+    ingredients: req.body.ingredients,
+    instructions: req.body.instructions,
+    difficulty: req.body.difficulty,
+    time: req.body.time,
+    _id: req.params.id
   });
-  Recipes.updateOne({_id: req.params.id}, recipes).then(
+  Recipe.findOneAndUpdate({_id: req.params.id}, recipe).then(
     () => {
       res.status(201).json({
-        message: 'Recipes updated successfully!'
+        message: 'Recipe updated successfully!'
+      });
+    }
+  ).catch(
+    (error) => {
+      res.status(400).json({
+        error: error
+      });
+    }
+  );
+});
+
+app.delete('/api/recipes/:id', (req, res, next) => {
+  Recipe.deleteOne({_id: req.params.id}).then(
+    () => {
+      res.status(200).json({
+        message: 'Deleted!'
       });
     }
   ).catch(
